@@ -1,3 +1,6 @@
+
+from mysql import connector
+
 class TvShow(object):
     def __init__(self, name, showTime, showPlatform, type, originName, picture, introduction, comments):
         self.name = name
@@ -8,4 +11,3 @@ class TvShow(object):
         self.picture = picture
         self.introduction = introduction
         self.comments = comments
-

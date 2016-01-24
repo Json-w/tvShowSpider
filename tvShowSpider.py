@@ -16,16 +16,35 @@ class TVShowSpider:
 
 class TvShowParser:
     def parse(self, tvShow, url):
+        tvShowDao = model.TvShowDao()
+        flag = 0
         for tr in LoadCotent().get_content_from_internet(url).body.tbody.contents[1].next_siblings:
             if (type(tr) == element.Tag):
+                index = 0
                 for td in tr.contents:
                     if (type(td) == element.Tag):
+                        if index == 0:
+                            # tvShow.set_showTime(str(td.string))
+                            tvShow.showTime = str(td.string)
+                        elif index == 1:
+                            tvShow.set_showPlatform(str(td.string))
+                        elif index == 2:
+                            tvShow.set_type(str(td.string))
+                        elif index == 3:
+                            tvShow.set_originName(str(td.string))
+                        elif tvShow == 4:
+                            tvShow.set_name(str(td.string))
+                        index = index + 1
                         if type(td.find('a')) == element.Tag:
                             url = td.find('a').get('href')
                             print(url)
-                            self.get_tvshow_detail(url)
+                            self.get_tvshow_detail(url, tvShow)
+                tvShowDao.save_TvShow(tvShow)
+                print("当前下载数:")
+                print(flag)
+                flag = flag + 1
 
-    def get_tvshow_detail(self, url):
+    def get_tvshow_detail(self, url, tvShow):
         detailSoup = LoadCotent().get_content_from_internet(url)
         for entry in detailSoup.find_all(id='entry'):
             for entryChild in entry.children:
@@ -41,7 +60,7 @@ class TvShowParser:
                                 i = i + 1
                                 if i > 2:
                                     break
-                        print(s)
+                        tvShow.set_introduction(s)
 
 
 class LoadCotent:
