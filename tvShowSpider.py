@@ -24,7 +24,8 @@ class TvShowParser:
                 for td in tr.contents:
                     if (type(td) == element.Tag):
                         if index == 0:
-                            tvShow.set_showTime(str(td.string))
+                            # tvShow.set_showTime(str(td.string))
+                            tvShow.showTime = str(td.string)
                         elif index == 1:
                             tvShow.set_showPlatform(str(td.string))
                         elif index == 2:

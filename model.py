@@ -11,63 +11,54 @@ class TvShow(object):
         self.picture = picture
         self.introduction = introduction
         self.comments = comments
-    def __init__(self):
-        self.name = ''
-        self.showTime = ''
-        self.showPlatform = ''
-        self.type = ''
-        self.originName = ''
-        self.picture = ''
-        self.introduction = ''
-        self.comments = ''
 
-    def set_name(self, name):
-        self.name = name
-
-    def set_showTime(self, showTime):
-        self.showTime = showTime
-
-    def set_showPlatform(self, showPlatform):
-        self.showPlatform = showPlatform
-
-    def set_type(self,type):
-        self.type = type
-
-    def set_originName(self, originName):
-        self.originName = originName
-
-    def set_picture(self, picture):
-        self.picture = picture
-
-    def set_introduction(self, introduction):
-        self.introduction = introduction
-
-    def set_comments(self, comments):
-        self.comments = comments
-
-    def get_name(self):
-        return self.name
-
-    def get_showTime(self):
-        return self.showTime
-
-    def get_showPlatform(self):
-        return self.showPlatform
-
-    def get_type(self):
-        return self.type
-
-    def get_originName(self):
-        return self.originName
-
-    def get_picture(self):
-        return self.picture
-
-    def get_introduction(self):
-        return self.introduction
-
-    def get_comments(self):
-        return self.comments
+    # def set_name(self, name):
+    #     self.name = name
+    #
+    # def set_showTime(self, showTime):
+    #     self.showTime = showTime
+    #
+    # def set_showPlatform(self, showPlatform):
+    #     self.showPlatform = showPlatform
+    #
+    # def set_type(self,type):
+    #     self.type = type
+    #
+    # def set_originName(self, originName):
+    #     self.originName = originName
+    #
+    # def set_picture(self, picture):
+    #     self.picture = picture
+    #
+    # def set_introduction(self, introduction):
+    #     self.introduction = introduction
+    #
+    # def set_comments(self, comments):
+    #     self.comments = comments
+    #
+    # def get_name(self):
+    #     return self.name
+    #
+    # def get_showTime(self):
+    #     return self.showTime
+    #
+    # def get_showPlatform(self):
+    #     return self.showPlatform
+    #
+    # def get_type(self):
+    #     return self.type
+    #
+    # def get_originName(self):
+    #     return self.originName
+    #
+    # def get_picture(self):
+    #     return self.picture
+    #
+    # def get_introduction(self):
+    #     return self.introduction
+    #
+    # def get_comments(self):
+    #     return self.comments
 
 
 class TvShowDao(object):
