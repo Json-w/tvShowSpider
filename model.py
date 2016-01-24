@@ -9,5 +9,3 @@ class TvShow(object):
         self.introduction = introduction
         self.comments = comments
 
-    def __init__(self):
-        pass
