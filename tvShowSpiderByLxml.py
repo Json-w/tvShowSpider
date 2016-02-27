@@ -6,21 +6,23 @@ from lxml import etree
 
 log_filename = 'tvShowSpider.log'
 log_format = '%(filename)s [%(asctime)s] [%(levelname)s] %(message)s'
-logging.basicConfig(format=log_format,datefmt='%Y-%m-%d %H:%M:%S %p',level=logging.INFO,filename=log_filename)
+logging.basicConfig(format=log_format, datefmt='%Y-%m-%d %H:%M:%S %p', level=logging.INFO, filename=log_filename)
+
 
 class DBManager:
     host = '127.0.0.1'
     port = 3306
     user = 'root'
-    password = '123456'
+    password = ''
     db = 'tvShows'
 
     def get_connector(self):
         return connector.connect(host=self.host, port=self.port, user=self.user, password=self.password,
                                  database=self.db)
 
-#s = requests.session()
-#s.keep_alive = False
+
+# s = requests.session()
+# s.keep_alive = False
 response = requests.get('http://cn163.net/cwmeiju/')
 selector = etree.HTML(response.text)
 
@@ -33,23 +35,24 @@ class TvShow:
 def download(url, tvShow):
     picName = url.split('/')[len(url.split('/')) - 1]
     picFilePath = './pics/{0}'.format(picName)
-    modifyUrl = url.split('//')[0]+'//o'+url.split('//')[1]
+    modifyUrl = url.split('//')[0] + '//o' + url.split('//')[1]
     if not os.path.exists(os.path.dirname(picFilePath)):
         os.mkdir(os.path.dirname(picFilePath))
     tvShow.picture = picFilePath
     with open(picFilePath, 'wb') as picFile:
-        while(True):
+        while (True):
             try:
-                print('原始图片url:'+url)
-                picFile.write(requests.get(url,timeout=10).content)
+                print('原始图片url:' + url)
+                picFile.write(requests.get(url, timeout=10).content)
                 break
             except requests.exceptions.ConnectionError as connectError:
-                print("修正后的图片url:"+modifyUrl)
+                print("修正后的图片url:" + modifyUrl)
                 try:
-                    picFile.write(requests.get(modifyUrl,timeout=10).content)
+                    picFile.write(requests.get(modifyUrl, timeout=10).content)
                     break
                 except requests.exceptions.ConnectionError as connectError:
                     continue
+
 
 def saveTvShow(tvShow):
     db_manager = DBManager()
@@ -60,8 +63,8 @@ def saveTvShow(tvShow):
     if hasattr(tvShow, 'picture'):
         picPath = tvShow.picture
     if hasattr(tvShow, 'introduction'):
-        introduction = tvShow.introduction.replace('\'',' ')
-        introduction = introduction.replace('\"',' ')
+        introduction = tvShow.introduction.replace('\'', ' ')
+        introduction = introduction.replace('\"', ' ')
     cursor.execute(
             "insert into `tv_shows` (name,show_time,show_platform,type,origin_name,picture,introduction) values(\"{0}\",\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\")".format(
                     tvShow.name, tvShow.showTime, tvShow.showPlatform, tvShow.type, tvShow.originName, picPath,
@@ -71,11 +74,12 @@ def saveTvShow(tvShow):
     connec.close
 
 
-flag = 0
+ifBrokenFirstTFlag = 0
 for e in selector.xpath('//div[@id="post-3807"]/table/tbody/tr'):
+
     index = 0
-    if flag == 0:
-        flag += 1
+    if ifBrokenFirstTFlag == 0:
+        ifBrokenFirstTFlag += 1
         continue
     tvShow = TvShow()
     for td in e.getchildren():
@@ -84,12 +88,15 @@ for e in selector.xpath('//div[@id="post-3807"]/table/tbody/tr'):
                 logging.info(td.getchildren()[0].get('href'))
                 res = requests.get(td.getchildren()[0].get('href'))
                 sel = etree.HTML(res.text)
-                con = sel.xpath('//div[@id="entry"]/p')[0].xpath('string(.)')
-                tvShow.introduction = con
-                logging.info('介绍:' + con)
-                if len(sel.xpath('//div[@class="wp-caption alignnone"]/img/@src')) > 0:
-                    logging.info('图片地址:' + sel.xpath('//div[@class="wp-caption alignnone"]/img/@src')[0])
-                    download(sel.xpath('//div[@class="wp-caption alignnone"]/img/@src')[0], tvShow)
+                try:
+                    con = sel.xpath('//div[@id="entry"]/p')[0].xpath('string(.)')
+                    tvShow.introduction = con
+                    logging.info('介绍:' + con)
+                    if len(sel.xpath('//div[@class="wp-caption alignnone"]/img/@src')) > 0:
+                        logging.info('图片地址:' + sel.xpath('//div[@class="wp-caption alignnone"]/img/@src')[0])
+                        download(sel.xpath('//div[@class="wp-caption alignnone"]/img/@src')[0], tvShow)
+                except:
+                    pass
         content = td.xpath('string(.)')
         print(content)
         if index == 0:
